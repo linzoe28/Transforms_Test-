@@ -5,7 +5,9 @@
  */
 package transforms_test;
 
+import javafx.animation.ParallelTransition;
 import javafx.animation.PathTransition;
+import javafx.animation.RotateTransition;
 import javafx.animation.ScaleTransition;
 import javafx.animation.SequentialTransition;
 import javafx.application.Application;
@@ -14,6 +16,8 @@ import javafx.event.EventHandler;
 import javafx.scene.Group;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
 import javafx.scene.layout.StackPane;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Circle;
@@ -28,20 +32,23 @@ import javafx.util.Duration;
  *
  * @author User
  */
-public class PathTransition_Test extends Application {
-
+public class ParallTransition_Test extends Application {
+    
     @Override
     public void start(Stage primaryStage) {
         Group root = new Group();
-        Circle circle = new Circle(100, 100, 10, Color.BLUEVIOLET);
-        root.getChildren().add(circle);
+        Image image = new Image("http://link.photo.pchome.com.tw/s08/ruby051029/19/124671242749");
+        ImageView imageView = new ImageView(image);
+        root.getChildren().add(imageView);
         PathTransition pathTransition = new PathTransition();
         pathTransition.setDuration(Duration.seconds(5));
-        pathTransition.setNode(circle);
+        pathTransition.setNode(imageView);
 
-        ScaleTransition scaleTransition = new ScaleTransition(Duration.seconds(5));
-        scaleTransition.setByX(2);
-        scaleTransition.setByY(2);
+        RotateTransition rotateTransition =new RotateTransition(Duration.millis(100));
+        rotateTransition.setFromAngle(0);
+        rotateTransition.setToAngle(360);
+        rotateTransition.setCycleCount(50);
+
 
         Path path = new Path();
         path.getElements().addAll(
@@ -49,11 +56,12 @@ public class PathTransition_Test extends Application {
         );
         pathTransition.setPath(path);
 
-        SequentialTransition sequentialTransition = new SequentialTransition(circle, scaleTransition, pathTransition);  //不同的Transition，依序做撥放動作
-        sequentialTransition.play();
+        ParallelTransition parallelTransition=new ParallelTransition(imageView,rotateTransition,pathTransition);  //不同的Transition，合併一起撥放動作
+        parallelTransition.play();
+        
 
         Scene scene = new Scene(root, 800, 750);
-
+        
         primaryStage.setTitle("Hello World!");
         primaryStage.setScene(scene);
         primaryStage.show();
@@ -65,5 +73,5 @@ public class PathTransition_Test extends Application {
     public static void main(String[] args) {
         launch(args);
     }
-
+    
 }
